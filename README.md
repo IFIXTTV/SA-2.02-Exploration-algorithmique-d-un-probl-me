@@ -1,1 +1,3 @@
 # SA-2.02-Exploration-algorithmique-d-un-probl-me
+
+wilhelm romain S2C
