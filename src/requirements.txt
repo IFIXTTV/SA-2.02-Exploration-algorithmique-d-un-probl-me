@@ -1,0 +1,7 @@
+folium
+pandas
+geopy
+nicegui
+pywebview
+qtpy
+PyQt6-WebEngine
