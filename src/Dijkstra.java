@@ -1,37 +1,62 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+/**
+ * Algorithme de Dijkstra pour le plus court chemin.
+ */
 public class Dijkstra {
 
-    public Valeurs resoudre(Graphe g, String depart) {
-        Valeurs v = new Valeurs();
-        List<String> Q = new ArrayList<>();
+    /**
+     * Calcule les plus courts chemins depuis un nœud de départ.
+     * @param graphe le graphe
+     * @param depart nœud de départ
+     * @return valeurs (distances et parents)
+     */
+    public static Valeurs calculer(Graphe graphe, String depart) {
+        Valeurs valeurs = new Valeurs(graphe.getNoeuds());
+        valeurs.setDistance(depart, 0.0);
+        Set<String> visites = new HashSet<>();
 
-        for (String n : g.getNoeuds()) {
-            v.setValeur(n, Double.MAX_VALUE);
-            v.setParent(n, null);
-            Q.add(n);
-        }
-        v.setValeur(depart, 0);
-
-        while (!Q.isEmpty()) {
-            String u = null;
-            for (String n : Q) {
-                if (u == null || v.getValeur(n) < v.getValeur(u)) u = n;
+        while (true) {
+            String courant = null;
+            double minDist = Double.MAX_VALUE;
+            for (String n : graphe.getNoeuds()) {
+                if (!visites.contains(n) && valeurs.getDistance(n) < minDist) {
+                    minDist = valeurs.getDistance(n);
+                    courant = n;
+                }
             }
-            Q.remove(u);
+            if (courant == null) break;
+            visites.add(courant);
 
-            if (v.getValeur(u) == Double.MAX_VALUE) break;
-
-            for (Arc a : g.getAdjacents(u).getListe()) {
-                if (!Q.contains(a.cible)) continue;
-                double d = v.getValeur(u) + a.poids;
-                if (d < v.getValeur(a.cible)) {
-                    v.setValeur(a.cible, d);
-                    v.setParent(a.cible, u);
+            for (Arc arc : graphe.getAdjacents(courant).getListe()) {
+                double nouvelleVal = valeurs.getDistance(courant) + arc.getPoids();
+                if (nouvelleVal < valeurs.getDistance(arc.getCible())) {
+                    valeurs.setDistance(arc.getCible(), nouvelleVal);
+                    valeurs.setParent(arc.getCible(), courant);
                 }
             }
         }
-        return v;
+        return valeurs;
+    }
+
+    /**
+     * Reconstruit le chemin depuis le départ jusqu'à l'arrivée.
+     * @param valeurs résultat de l'algorithme
+     * @param arrivee nœud d'arrivée
+     * @return liste des nœuds du chemin
+     */
+    public static List<String> chemin(Valeurs valeurs, String arrivee) {
+        List<String> chemin = new ArrayList<>();
+        String courant = arrivee;
+        while (courant != null) {
+            chemin.add(courant);
+            courant = valeurs.getParent(courant);
+        }
+        Collections.reverse(chemin);
+        return chemin;
     }
 }

@@ -1,48 +1,44 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
+/**
+ * Représente la fonction de valeur L(X) pour chaque nœud du graphe.
+ */
 public class Valeurs {
-    Map<String, Double> valeur;
-    Map<String, String> parent;
+    private Map<String, Double> distances;
+    private Map<String, String> parents;
 
-    public Valeurs() {
-        this.valeur = new TreeMap<>();
-        this.parent = new TreeMap<>();
-    }
-
-    public void setValeur(String nom, double valeur) {
-        this.valeur.put(nom, valeur);
-    }
-
-    public void setParent(String nom, String parent) {
-        this.parent.put(nom, parent);
-    }
-
-    public String getParent(String nom) {
-        return this.parent.get(nom);
-    }
-
-    public double getValeur(String nom) {
-        return this.valeur.get(nom);
-    }
-
-    public List<String> calculerChemin(String destination) {
-        List<String> chemin = new ArrayList<>();
-        String actuel = destination;
-        while (actuel != null) {
-            chemin.add(0, actuel);
-            actuel = parent.get(actuel);
+    /** @param noeuds liste des nœuds du graphe */
+    public Valeurs(java.util.List<String> noeuds) {
+        distances = new HashMap<>();
+        parents = new HashMap<>();
+        for (String n : noeuds) {
+            distances.put(n, Double.MAX_VALUE);
+            parents.put(n, null);
         }
-        return chemin;
     }
 
-    public String toString() {
-        String res = "";
-        for (String s : this.valeur.keySet()) {
-            res += s + " -> V:" + valeur.get(s) + " p:" + parent.get(s) + "\n";
-        }
-        return res;
-    }
+    /**
+     * @param noeud identifiant du nœud
+     * @return distance courante
+     */
+    public double getDistance(String noeud) { return distances.get(noeud); }
+
+    /**
+     * @param noeud identifiant du nœud
+     * @param d nouvelle distance
+     */
+    public void setDistance(String noeud, double d) { distances.put(noeud, d); }
+
+    /**
+     * @param noeud identifiant du nœud
+     * @return identifiant du parent
+     */
+    public String getParent(String noeud) { return parents.get(noeud); }
+
+    /**
+     * @param noeud identifiant du nœud
+     * @param parent identifiant du parent
+     */
+    public void setParent(String noeud, String parent) { parents.put(noeud, parent); }
 }

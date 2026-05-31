@@ -1,46 +1,61 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Implémentation d'un graphe par liste d'adjacence.
+ */
 public class GrapheListe implements Graphe {
-    List<String> noeuds;
-    Map<String, Arcs> adjacence;
+    private List<String> noeuds;
+    private List<Arcs> adjacence;
 
+    /** Crée un graphe vide. */
     public GrapheListe() {
         this.noeuds = new ArrayList<>();
-        this.adjacence = new HashMap<>();
+        this.adjacence = new ArrayList<>();
     }
 
-    public List<String> getNoeuds() {
-        return noeuds;
+    /**
+     * Ajoute un nœud s'il n'existe pas déjà.
+     * @param id identifiant du nœud
+     */
+    public void ajouterNoeud(String id) {
+        if (!noeuds.contains(id)) {
+            noeuds.add(id);
+            adjacence.add(new Arcs());
+        }
     }
 
+    /**
+     * Ajoute un arc entre deux nœuds (crée les nœuds si absents).
+     * @param source identifiant du nœud source
+     * @param destination identifiant du nœud destination
+     * @param poids poids de l'arc
+     */
+    public void ajouterArc(String source, String destination, double poids) {
+        ajouterNoeud(source);
+        ajouterNoeud(destination);
+        int idx = noeuds.indexOf(source);
+        adjacence.get(idx).ajouter(new Arc(destination, poids));
+    }
+
+    @Override
+    public List<String> getNoeuds() { return noeuds; }
+
+    @Override
     public Arcs getAdjacents(String noeud) {
-        return adjacence.getOrDefault(noeud, new Arcs());
+        int idx = noeuds.indexOf(noeud);
+        if (idx == -1) return new Arcs();
+        return adjacence.get(idx);
     }
 
-    public void ajouterArc(String source, String dest, double poids) {
-        if (!noeuds.contains(source)) {
-            noeuds.add(source);
-            adjacence.put(source, new Arcs());
-        }
-        if (!noeuds.contains(dest)) {
-            noeuds.add(dest);
-            adjacence.put(dest, new Arcs());
-        }
-        adjacence.get(source).ajouter(new Arc(dest, poids));
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (String n : noeuds) {
-            sb.append(n).append(" -> ");
-            for (Arc a : adjacence.get(n).getListe()) {
-                sb.append(a.cible).append("(").append((int) a.poids).append(") ");
+    /** Affiche le graphe au format texte. */
+    public void afficher() {
+        for (String noeud : noeuds) {
+            StringBuilder sb = new StringBuilder(noeud + " -> ");
+            for (Arc arc : getAdjacents(noeud).getListe()) {
+                sb.append(arc.getCible()).append("(").append((int) arc.getPoids()).append(") ");
             }
-            sb.append("\n");
+            System.out.println(sb.toString().trim());
         }
-        return sb.toString();
     }
 }
