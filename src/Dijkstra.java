@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,24 +21,29 @@ public class Dijkstra {
         Valeurs valeurs = new Valeurs(graphe.getNoeuds());
         valeurs.setDistance(depart, 0.0);
         Set<String> visites = new HashSet<>();
+        Map<String, Double> nonVisites = new HashMap<>();
+        for (String n : graphe.getNoeuds()) nonVisites.put(n, valeurs.getDistance(n));
 
-        while (true) {
+        while (!nonVisites.isEmpty()) {
             String courant = null;
             double minDist = Double.MAX_VALUE;
-            for (String n : graphe.getNoeuds()) {
-                if (!visites.contains(n) && valeurs.getDistance(n) < minDist) {
-                    minDist = valeurs.getDistance(n);
-                    courant = n;
+            for (Map.Entry<String, Double> e : nonVisites.entrySet()) {
+                if (e.getValue() < minDist) {
+                    minDist = e.getValue();
+                    courant = e.getKey();
                 }
             }
             if (courant == null) break;
+            nonVisites.remove(courant);
             visites.add(courant);
 
             for (Arc arc : graphe.getAdjacents(courant).getListe()) {
+                if (visites.contains(arc.getCible())) continue;
                 double nouvelleVal = valeurs.getDistance(courant) + arc.getPoids();
                 if (nouvelleVal < valeurs.getDistance(arc.getCible())) {
                     valeurs.setDistance(arc.getCible(), nouvelleVal);
                     valeurs.setParent(arc.getCible(), courant);
+                    nonVisites.put(arc.getCible(), nouvelleVal);
                 }
             }
         }

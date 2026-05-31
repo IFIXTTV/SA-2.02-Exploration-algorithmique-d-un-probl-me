@@ -9,24 +9,12 @@ public class GrapheReader {
 
     /**
      * Charge un GrapheListe depuis les fichiers de nœuds et d'arcs.
-     * @param nodesFile chemin vers le fichier de nœuds (format: id;nom;lat;lon;ligne)
      * @param edgesFile chemin vers le fichier d'arcs (format: source;destination;poids)
      * @return le graphe chargé
      * @throws IOException en cas d'erreur de lecture
      */
-    public static GrapheListe charger(String nodesFile, String edgesFile) throws IOException {
+    public static GrapheListe charger(String edgesFile) throws IOException {
         GrapheListe graphe = new GrapheListe();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(nodesFile))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(";");
-                if (parts.length >= 1) {
-                    graphe.ajouterNoeud(parts[0]);
-                }
-            }
-        }
-
         try (BufferedReader br = new BufferedReader(new FileReader(edgesFile))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -36,7 +24,6 @@ public class GrapheReader {
                 }
             }
         }
-
         return graphe;
     }
 }

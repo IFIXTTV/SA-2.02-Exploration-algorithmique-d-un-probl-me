@@ -23,11 +23,11 @@ public class Main {
 	    String idTo   = to.split(regex)[1];
 
         try {
-            GrapheListe graphe = GrapheReader.charger("stan_nodes.txt", "stan_edges.txt");
+            GrapheListe graphe = GrapheReader.charger("stan_edges.txt");
             Valeurs valeurs = Dijkstra.calculer(graphe, idFrom);
             List<String> chemin = Dijkstra.chemin(valeurs, idTo);
 
-            if (chemin.size() == 1 && !chemin.get(0).equals(idFrom)) {
+            if (chemin.size() <= 1 || !chemin.get(0).equals(idFrom)) {
                 System.out.println(idFrom + ";" + idTo);
             } else {
                 StringBuilder sb = new StringBuilder();

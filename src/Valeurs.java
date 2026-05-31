@@ -20,9 +20,11 @@ public class Valeurs {
 
     /**
      * @param noeud identifiant du nœud
-     * @return distance courante
+     * @return distance courante (MAX_VALUE si inconnu)
      */
-    public double getDistance(String noeud) { return distances.get(noeud); }
+    public double getDistance(String noeud) {
+        return distances.getOrDefault(noeud, Double.MAX_VALUE);
+    }
 
     /**
      * @param noeud identifiant du nœud
